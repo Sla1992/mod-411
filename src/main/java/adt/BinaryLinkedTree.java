@@ -3,7 +3,7 @@ package adt;
 import java.lang.reflect.Method;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class BinaryLinkedTree<T> implements BinaryTree<T> {
+public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> {
 
     // root node
     private BinaryTreeNode root;
@@ -106,6 +106,42 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
         root.setRightChild(null);
 
         return rightSubtree;
+    }
+
+    /**
+     * Einfügend eines neuen Elementes in die Baumstruktur. Damit das Einfügen funktioniert
+     * müssen die Eigenschaften eines BST (Binary Search Tree) erfüllt sein. Dies bedeutet,
+     * dass der Baum zu jeder gegebenen Zeit sortiert vorliegt.
+     * <p>
+     * Referenz: Algorithmus 14.7 (s. 363)
+     *
+     * @param element Einzufügendes Element
+     * @return liefert den Wert true, wenn das Element eingefüght werden konnte.
+     */
+    @SuppressWarnings("unchecked")
+    public boolean insert(T element) {
+
+        BinaryTreeNode parent = root, child = root;
+
+        do {
+            int cmp = child.getPayload().compareTo(element);
+            if (cmp == 0)
+                return false;
+            else {
+                parent = child;
+                child = (cmp > 0 ? child.getLeftChild() : child.getRightChild());
+            }
+
+        } while (child != null);
+
+        BinaryTreeNode node = new BinaryTreeNode<T>(element, null, null);
+
+        if (parent.getPayload().compareTo(element) > 0)
+            parent.setLeftChild(node);
+        else
+            parent.setRightChild(node);
+
+        return true;
     }
 
     /**

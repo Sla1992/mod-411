@@ -2,6 +2,7 @@ package adt;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Representiert einen Knoten in einer binären Baumstruktur
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @SuppressWarnings("WeakerAccess")
-public class BinaryTreeNode<T> {
+public class BinaryTreeNode<T extends Comparable<T>> implements Comparable<T> {
 
     /**
      * Zu speicherne Daten in in unserem Knoten.
@@ -47,4 +48,12 @@ public class BinaryTreeNode<T> {
         this.rightChild = rightChild;
     }
 
+    /**
+     * Vergleicht dieses Objekt mit dem angegebenen Objekt. Liefert eine negative ganze Zahl,
+     * null oder eine positive Zahl, wenn dieses Objekt kleiner, gleich oder grösser als das
+     * angegebene Objekt ist.
+     */
+    public int compareTo(@NotNull T object) {
+        return payload == null ? -1 : payload.compareTo(object);
+    }
 }
