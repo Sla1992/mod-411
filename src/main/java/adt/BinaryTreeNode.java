@@ -8,9 +8,13 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class BinaryTreeNode {
+@SuppressWarnings("WeakerAccess")
+public class BinaryTreeNode<T> {
 
-    private Object payload;
+    /**
+     * Zu speicherne Daten in in unserem Knoten.
+     */
+    private T payload;
 
     private BinaryTreeNode leftChild;
     private BinaryTreeNode rightChild;
@@ -26,20 +30,18 @@ public class BinaryTreeNode {
      *
      * @param payload Zu speichernde Daten im Knoten
      */
-    public BinaryTreeNode(Object payload) {
+    public BinaryTreeNode(T payload) {
         this.payload = payload;
     }
 
     /**
      * Erstellt einen Knotenpunkt mit den übergebenen Daten.
      *
-     * @param payload Root element of the BinaryTreeNode
-     * @param leftChild Linker Teilbaum
+     * @param payload    Root element of the BinaryTreeNode
+     * @param leftChild  Linker Teilbaum
      * @param rightChild Rechter Teilbaum
      */
-    public BinaryTreeNode(Object payload,
-                          BinaryTreeNode leftChild,
-                          BinaryTreeNode rightChild) {
+    public BinaryTreeNode(T payload, BinaryTreeNode leftChild, BinaryTreeNode rightChild) {
         this.payload = payload;
         this.leftChild = leftChild;
         this.rightChild = rightChild;
