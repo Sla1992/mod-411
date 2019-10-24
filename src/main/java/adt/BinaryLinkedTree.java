@@ -13,14 +13,14 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     private static Object[] visitArgs = new Object[1];         // parameters of visit method
     private static int count;                                  // counter
     private static Class[] paramType = {BinaryTreeNode.class}; // type of parameter for visit
-    private static Method theAdd1;                             // method to increment count by 1
+    private static Method countNodes;                          // method to count nodes
     static Method outputMethod;                                // method to output node element
 
     // method to initialize class data members
     static {
         try {
             Class<BinaryLinkedTree> treeClass = BinaryLinkedTree.class;
-            theAdd1 = treeClass.getMethod("add1", paramType);
+            countNodes = treeClass.getMethod("countNodes", paramType);
             outputMethod = treeClass.getMethod("output", paramType);
         } catch (Exception e) {
             // can't catch exceptionn here
@@ -28,16 +28,18 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     }
 
     /**
-     * visit method that outputs element
+     * Besuchsmethode, die das Element ausgibt.
+     *
+     * @param treeNode auszugebender Knoten
      */
     public static void output(BinaryTreeNode treeNode) {
         System.out.print(treeNode.getPayload() + " ");
     }
 
     /**
-     * Besuchsmethode zum Zählen von Knoten.
+     * Besuchsmethode zum Zählen der Knoten.
      */
-    public static void add1(BinaryTreeNode treeNode) {
+    public static void countNodes(BinaryTreeNode treeNode) {
         count++;
     }
 
@@ -107,9 +109,9 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     }
 
     /**
-     * Preorder traversal
+     * Preorder Traversierung.
      *
-     * @param visit Method to be used during visit
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
     public void preOrder(Method visit) {
         BinaryLinkedTree.visit = visit;
@@ -134,7 +136,9 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     }
 
     /**
-     * Inorder traversal
+     * InOrder Traversierung.
+     *
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
     public void inOrder(Method visit) {
         BinaryLinkedTree.visit = visit;
@@ -142,7 +146,9 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     }
 
     /**
-     * actual inorder traversal method
+     * Effektive Umsetzung der InOrder Traversierung.
+     *
+     * @param treeNode Knoten, von welchem die Traversierung gestartet wird
      */
     @SuppressWarnings("ThrowablePrintedToSystemOut")
     private void traverseInOrder(BinaryTreeNode treeNode) {
@@ -159,7 +165,9 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     }
 
     /**
-     * Postorder traversal
+     * PostOrder Traversierung.
+     *
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
     public void postOrder(Method visit) {
         BinaryLinkedTree.visit = visit;
@@ -167,7 +175,9 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     }
 
     /**
-     * Actual postorder traversal method
+     * Effektive Umsetzung der PostOrder Traversierung
+     *
+     * @param treeNode Knoten, von welchem die Traversierung gestartet wird
      */
     @SuppressWarnings("ThrowablePrintedToSystemOut")
     private void traversePostOrder(BinaryTreeNode treeNode) {
@@ -184,7 +194,9 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
     }
 
     /**
-     * Level order traversal
+     * LevelOrder Traversierung
+     *
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
     @SuppressWarnings("ThrowablePrintedToSystemOut")
     public void levelOrder(Method visit) {
@@ -216,7 +228,7 @@ public class BinaryLinkedTree<T> implements BinaryTree<T> {
      */
     public int size() {
         count = 0;
-        preOrder(theAdd1);
+        preOrder(countNodes);
         return count;
     }
 
