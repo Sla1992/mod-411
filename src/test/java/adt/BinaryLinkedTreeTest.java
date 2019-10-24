@@ -7,36 +7,27 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BinaryLinkedTreeTest {
 
-    private BinaryLinkedTree tree;
+    private BinaryLinkedTree<Integer> tree;
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
 
     @BeforeEach
     void setUp() {
-        BinaryLinkedTree
-                a = new BinaryLinkedTree(),
-                b = new BinaryLinkedTree(),
-                c = new BinaryLinkedTree(),
-                d = new BinaryLinkedTree(),
-                e = new BinaryLinkedTree(),
-                f = new BinaryLinkedTree();
-
-        a.makeTree(1, new BinaryLinkedTree(), new BinaryLinkedTree());
-        b.makeTree(3, new BinaryLinkedTree(), new BinaryLinkedTree());
-        c.makeTree(5, new BinaryLinkedTree(), new BinaryLinkedTree());
-        d.makeTree(7, new BinaryLinkedTree(), new BinaryLinkedTree());
-        e.makeTree(2, a, b);
-        f.makeTree(6, c, d);
-
-        tree = new BinaryLinkedTree();
-        tree.makeTree(4, e, f);
-
-        System.setOut(new PrintStream(outContent));
+        tree = new BinaryLinkedTree<>();
+        tree.makeTree(
+                4,
+                new BinaryTreeNode<>(2,
+                        new BinaryTreeNode<>(1),
+                        new BinaryTreeNode<>(3)),
+                new BinaryTreeNode<>(6,
+                        new BinaryTreeNode<>(5),
+                        new BinaryTreeNode<>(7))
+        );
     }
 
     @BeforeEach
