@@ -2,7 +2,8 @@ package adt;
 
 import java.lang.reflect.Method;
 
-public class BinaryLinkedTree implements BinaryTree {
+@SuppressWarnings({"WeakerAccess", "unused"})
+public class BinaryLinkedTree<T> implements BinaryTree<T> {
 
     // root node
     private BinaryTreeNode root;
@@ -13,7 +14,7 @@ public class BinaryLinkedTree implements BinaryTree {
     private static int count;                                  // counter
     private static Class[] paramType = {BinaryTreeNode.class}; // type of parameter for visit
     private static Method theAdd1;                             // method to increment count by 1
-    static Method outputMethod;                        // method to output node element
+    static Method outputMethod;                                // method to output node element
 
     // method to initialize class data members
     static {
@@ -36,7 +37,6 @@ public class BinaryLinkedTree implements BinaryTree {
     /**
      * Besuchsmethode zum Zählen von Knoten.
      */
-    @SuppressWarnings("unused")
     public static void add1(BinaryTreeNode treeNode) {
         count++;
     }
@@ -53,8 +53,8 @@ public class BinaryLinkedTree implements BinaryTree {
      *
      * @return Liefert den Wert null, falls der Baum leer ist
      */
-    public Object getRoot() {
-        return (isEmpty()) ? null : root.getPayload();
+    public BinaryTreeNode getRoot() {
+        return (isEmpty()) ? null : root;
     }
 
     /**
@@ -62,14 +62,12 @@ public class BinaryLinkedTree implements BinaryTree {
      *
      * <b>Vorsicht:</b> Der rechte und linke Teilbaum wird nicht geklont!
      *
-     * @param root  Wurzel der Baumstruktur
-     * @param left  Linker Teilbaum
-     * @param right Rechter Teilbaum
+     * @param payload Daten des Knotens
+     * @param left    Linker Teilbaum
+     * @param right   Rechter Teilbaum
      */
-    public void makeTree(Object root, Object left, Object right) {
-        this.root = new BinaryTreeNode(root,
-                ((BinaryLinkedTree) left).root,
-                ((BinaryLinkedTree) right).root);
+    public void makeTree(T payload, BinaryTreeNode left, BinaryTreeNode right) {
+        this.root = new BinaryTreeNode<>(payload, left, right);
     }
 
     /**
@@ -121,6 +119,7 @@ public class BinaryLinkedTree implements BinaryTree {
     /**
      * Actual preorder traversal method
      */
+    @SuppressWarnings("ThrowablePrintedToSystemOut")
     private void traversePreOrder(BinaryTreeNode treeNode) {
         if (treeNode != null) {
             visitArgs[0] = treeNode;
@@ -145,6 +144,7 @@ public class BinaryLinkedTree implements BinaryTree {
     /**
      * actual inorder traversal method
      */
+    @SuppressWarnings("ThrowablePrintedToSystemOut")
     private void traverseInOrder(BinaryTreeNode treeNode) {
         if (treeNode != null) {
             traverseInOrder(treeNode.getLeftChild());
@@ -186,6 +186,7 @@ public class BinaryLinkedTree implements BinaryTree {
     /**
      * Level order traversal
      */
+    @SuppressWarnings("ThrowablePrintedToSystemOut")
     public void levelOrder(Method visit) {
         ArrayQueue<BinaryTreeNode> q = new ArrayQueue<>();
         BinaryTreeNode treeNode = root;
