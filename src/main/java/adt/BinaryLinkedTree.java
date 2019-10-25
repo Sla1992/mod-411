@@ -121,7 +121,7 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
     @SuppressWarnings("unchecked")
     public boolean insert(T element) {
 
-        BinaryTreeNode parent = root, child = root;
+        BinaryTreeNode parent, child = root;
 
         do {
             int cmp = child.getPayload().compareTo(element);
@@ -134,7 +134,7 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
 
         } while (child != null);
 
-        BinaryTreeNode node = new BinaryTreeNode<T>(element, null, null);
+        BinaryTreeNode node = new BinaryTreeNode<>(element, null, null);
 
         if (parent.getPayload().compareTo(element) > 0)
             parent.setLeftChild(node);
@@ -142,6 +142,49 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
             parent.setRightChild(node);
 
         return true;
+    }
+
+    /**
+     * Löschen eines Elementes aus der Baumstruktur. Damit das Löschen funktioniert gehen wir
+     * davon aus, dass es sich um einen BST (Binary Search Tree) handelt und das zu löschende
+     * Element auch nur einmal vorhanden ist.
+     *
+     * @param element zu löschendes Element
+     * @return liefert true, falls das Element gelöscht werden konnte.
+     */
+    public boolean delete(T element) {
+        // Suchen des Knotens
+        BinaryTreeNode node = null; // = search(element);
+        BinaryTreeNode child, temp;
+
+        //noinspection ConstantConditions
+        if (node == null) return false;
+
+        if (node.getRightChild() == null && node.getLeftChild() == null) { // Es ist ein Blatt
+            child = null;
+
+        } else if (node.getLeftChild() == null) {
+            child = node.getRightChild();
+        } else if (node.getRightChild() == null) {
+            child = node.getLeftChild();
+        } else {
+            child = node.getRightChild();
+            temp = node;
+
+            while (child.getLeftChild() != null) {
+                temp = child;
+                child = child.getLeftChild();
+            }
+            child.setLeftChild(node.getLeftChild());
+            if (temp != node) {
+                temp.setLeftChild(child.getRightChild());
+                child.setRightChild(node.getRightChild());
+            }
+        }
+
+        // TODO Not yet finished
+
+        return false;
     }
 
     /**
