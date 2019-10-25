@@ -2,7 +2,8 @@ package adt;
 
 import java.lang.reflect.Method;
 
-public class BinaryLinkedTree implements BinaryTree {
+@SuppressWarnings({"WeakerAccess", "unused"})
+public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> {
 
     // root node
     private BinaryTreeNode root;
@@ -12,14 +13,14 @@ public class BinaryLinkedTree implements BinaryTree {
     private static Object[] visitArgs = new Object[1];         // parameters of visit method
     private static int count;                                  // counter
     private static Class[] paramType = {BinaryTreeNode.class}; // type of parameter for visit
-    private static Method theAdd1;                             // method to increment count by 1
-    static Method outputMethod;                        // method to output node element
+    private static Method countNodes;                          // method to count nodes
+    static Method outputMethod;                                // method to output node element
 
     // method to initialize class data members
     static {
         try {
             Class<BinaryLinkedTree> treeClass = BinaryLinkedTree.class;
-            theAdd1 = treeClass.getMethod("add1", paramType);
+            countNodes = treeClass.getMethod("countNodes", paramType);
             outputMethod = treeClass.getMethod("output", paramType);
         } catch (Exception e) {
             // can't catch exceptionn here
@@ -27,17 +28,18 @@ public class BinaryLinkedTree implements BinaryTree {
     }
 
     /**
-     * visit method that outputs element
+     * Besuchsmethode, die das Element ausgibt.
+     *
+     * @param treeNode auszugebender Knoten
      */
     public static void output(BinaryTreeNode treeNode) {
         System.out.print(treeNode.getPayload() + " ");
     }
 
     /**
-     * Besuchsmethode zum Zählen von Knoten.
+     * Besuchsmethode zum Zählen der Knoten.
      */
-    @SuppressWarnings("unused")
-    public static void add1(BinaryTreeNode treeNode) {
+    public static void countNodes(BinaryTreeNode treeNode) {
         count++;
     }
 
@@ -53,8 +55,8 @@ public class BinaryLinkedTree implements BinaryTree {
      *
      * @return Liefert den Wert null, falls der Baum leer ist
      */
-    public Object getRoot() {
-        return (isEmpty()) ? null : root.getPayload();
+    public BinaryTreeNode getRoot() {
+        return (isEmpty()) ? null : root;
     }
 
     /**
@@ -62,14 +64,12 @@ public class BinaryLinkedTree implements BinaryTree {
      *
      * <b>Vorsicht:</b> Der rechte und linke Teilbaum wird nicht geklont!
      *
-     * @param root  Wurzel der Baumstruktur
-     * @param left  Linker Teilbaum
-     * @param right Rechter Teilbaum
+     * @param payload Daten des Knotens
+     * @param left    Linker Teilbaum
+     * @param right   Rechter Teilbaum
      */
-    public void makeTree(Object root, Object left, Object right) {
-        this.root = new BinaryTreeNode(root,
-                ((BinaryLinkedTree) left).root,
-                ((BinaryLinkedTree) right).root);
+    public void makeTree(T payload, BinaryTreeNode left, BinaryTreeNode right) {
+        this.root = new BinaryTreeNode<>(payload, left, right);
     }
 
     /**
@@ -109,9 +109,45 @@ public class BinaryLinkedTree implements BinaryTree {
     }
 
     /**
-     * Preorder traversal
+     * Einfügend eines neuen Elementes in die Baumstruktur. Damit das Einfügen funktioniert
+     * müssen die Eigenschaften eines BST (Binary Search Tree) erfüllt sein. Dies bedeutet,
+     * dass der Baum zu jeder gegebenen Zeit sortiert vorliegt.
+     * <p>
+     * Referenz: Algorithmus 14.7 (s. 363)
      *
-     * @param visit Method to be used during visit
+     * @param element Einzufügendes Element
+     * @return liefert den Wert true, wenn das Element eingefüght werden konnte.
+     */
+    @SuppressWarnings("unchecked")
+    public boolean insert(T element) {
+
+        BinaryTreeNode parent = root, child = root;
+
+        do {
+            int cmp = child.getPayload().compareTo(element);
+            if (cmp == 0)
+                return false;
+            else {
+                parent = child;
+                child = (cmp > 0 ? child.getLeftChild() : child.getRightChild());
+            }
+
+        } while (child != null);
+
+        BinaryTreeNode node = new BinaryTreeNode<T>(element, null, null);
+
+        if (parent.getPayload().compareTo(element) > 0)
+            parent.setLeftChild(node);
+        else
+            parent.setRightChild(node);
+
+        return true;
+    }
+
+    /**
+     * Preorder Traversierung.
+     *
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
     public void preOrder(Method visit) {
         BinaryLinkedTree.visit = visit;
@@ -121,6 +157,7 @@ public class BinaryLinkedTree implements BinaryTree {
     /**
      * Actual preorder traversal method
      */
+    @SuppressWarnings("ThrowablePrintedToSystemOut")
     private void traversePreOrder(BinaryTreeNode treeNode) {
         if (treeNode != null) {
             visitArgs[0] = treeNode;
@@ -135,7 +172,9 @@ public class BinaryLinkedTree implements BinaryTree {
     }
 
     /**
-     * Inorder traversal
+     * InOrder Traversierung.
+     *
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
     public void inOrder(Method visit) {
         BinaryLinkedTree.visit = visit;
@@ -143,8 +182,11 @@ public class BinaryLinkedTree implements BinaryTree {
     }
 
     /**
-     * actual inorder traversal method
+     * Effektive Umsetzung der InOrder Traversierung.
+     *
+     * @param treeNode Knoten, von welchem die Traversierung gestartet wird
      */
+    @SuppressWarnings("ThrowablePrintedToSystemOut")
     private void traverseInOrder(BinaryTreeNode treeNode) {
         if (treeNode != null) {
             traverseInOrder(treeNode.getLeftChild());
@@ -159,7 +201,9 @@ public class BinaryLinkedTree implements BinaryTree {
     }
 
     /**
-     * Postorder traversal
+     * PostOrder Traversierung.
+     *
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
     public void postOrder(Method visit) {
         BinaryLinkedTree.visit = visit;
@@ -167,7 +211,9 @@ public class BinaryLinkedTree implements BinaryTree {
     }
 
     /**
-     * Actual postorder traversal method
+     * Effektive Umsetzung der PostOrder Traversierung
+     *
+     * @param treeNode Knoten, von welchem die Traversierung gestartet wird
      */
     @SuppressWarnings("ThrowablePrintedToSystemOut")
     private void traversePostOrder(BinaryTreeNode treeNode) {
@@ -184,8 +230,11 @@ public class BinaryLinkedTree implements BinaryTree {
     }
 
     /**
-     * Level order traversal
+     * LevelOrder Traversierung
+     *
+     * @param visit Methode, die während des Besuchs anzuwenden ist
      */
+    @SuppressWarnings("ThrowablePrintedToSystemOut")
     public void levelOrder(Method visit) {
         ArrayQueue<BinaryTreeNode> q = new ArrayQueue<>();
         BinaryTreeNode treeNode = root;
@@ -215,7 +264,7 @@ public class BinaryLinkedTree implements BinaryTree {
      */
     public int size() {
         count = 0;
-        preOrder(theAdd1);
+        preOrder(countNodes);
         return count;
     }
 

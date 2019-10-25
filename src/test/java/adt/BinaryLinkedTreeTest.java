@@ -7,36 +7,28 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BinaryLinkedTreeTest {
 
-    private BinaryLinkedTree tree;
+    private BinaryLinkedTree<Integer> tree;
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
 
     @BeforeEach
     void setUp() {
-        BinaryLinkedTree
-                a = new BinaryLinkedTree(),
-                b = new BinaryLinkedTree(),
-                c = new BinaryLinkedTree(),
-                d = new BinaryLinkedTree(),
-                e = new BinaryLinkedTree(),
-                f = new BinaryLinkedTree();
-
-        a.makeTree(1, new BinaryLinkedTree(), new BinaryLinkedTree());
-        b.makeTree(3, new BinaryLinkedTree(), new BinaryLinkedTree());
-        c.makeTree(5, new BinaryLinkedTree(), new BinaryLinkedTree());
-        d.makeTree(7, new BinaryLinkedTree(), new BinaryLinkedTree());
-        e.makeTree(2, a, b);
-        f.makeTree(6, c, d);
-
-        tree = new BinaryLinkedTree();
-        tree.makeTree(4, e, f);
-
-        System.setOut(new PrintStream(outContent));
+        tree = new BinaryLinkedTree<>();
+        tree.makeTree(
+                6,
+                new BinaryTreeNode<>(3,
+                        new BinaryTreeNode<>(1),
+                        new BinaryTreeNode<>(5)),
+                new BinaryTreeNode<>(9,
+                        new BinaryTreeNode<>(7),
+                        new BinaryTreeNode<>(10))
+        );
     }
 
     @BeforeEach
@@ -52,25 +44,48 @@ class BinaryLinkedTreeTest {
     @Test
     void preOrder() {
         tree.preOrder(BinaryLinkedTree.outputMethod);
-        assertEquals("4 2 1 3 6 5 7 ", outContent.toString());
+        assertEquals("6 3 1 5 9 7 10 ", outContent.toString());
     }
 
     @Test
     void inOrder() {
         tree.inOrder(BinaryLinkedTree.outputMethod);
-        assertEquals("1 2 3 4 5 6 7 ", outContent.toString());
+        assertEquals("1 3 5 6 7 9 10 ", outContent.toString());
     }
 
     @Test
     void postOrder() {
         tree.postOrder(BinaryLinkedTree.outputMethod);
-        assertEquals("1 3 2 5 7 6 4 ", outContent.toString());
+        assertEquals("1 5 3 7 10 9 6 ", outContent.toString());
     }
 
     @Test
     void levelOrder() {
         tree.levelOrder(BinaryLinkedTree.outputMethod);
-        assertEquals("4 2 6 1 3 5 7 ", outContent.toString());
+        assertEquals("6 3 9 1 5 7 10 ", outContent.toString());
+    }
+
+    @Test
+    void insertOne() {
+        assertTrue(tree.insert(4));
+        tree.inOrder(BinaryLinkedTree.outputMethod);
+        assertEquals("1 3 4 5 6 7 9 10 ", outContent.toString());
+    }
+
+    @Test
+    void insertTwo() {
+        assertTrue(tree.insert(4));
+        assertTrue(tree.insert(8));
+        tree.inOrder(BinaryLinkedTree.outputMethod);
+        assertEquals("1 3 4 5 6 7 8 9 10 ", outContent.toString());
+    }
+
+    @Test
+    void insertTwoLevelTest() {
+        assertTrue(tree.insert(4));
+        assertTrue(tree.insert(8));
+        tree.levelOrder(BinaryLinkedTree.outputMethod);
+        assertEquals("6 3 9 1 5 7 10 4 8 ", outContent.toString());
     }
 
     @Test
