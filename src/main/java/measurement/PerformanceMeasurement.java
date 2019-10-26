@@ -1,4 +1,4 @@
-package datatypes;
+package measurement;
 
 import java.util.Random;
 import java.util.function.Consumer;
