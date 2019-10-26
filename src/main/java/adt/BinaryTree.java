@@ -47,9 +47,19 @@ public interface BinaryTree<T extends  Comparable<T>> {
      * dass der Baum zu jeder gegebenen Zeit sortiert vorliegt.
      *
      * @param element Einzufügendes Element
-     * @return liefert den Wert true, wenn das Element eingefüght werden konnte.
+     * @return liefert den Wert true, wenn das Element eingefügt werden konnte.
      */
     boolean insert(T element);
+
+    /**
+     * Löschen eines Elementes aus der Baumstruktur. Damit das Löschen funktioniert gehen wir
+     * davon aus, dass es sich um einen BST (Binary Search Tree) handelt und das zu löschende
+     * Element auch nur einmal vorhanden ist.
+     *
+     * @param element zu löschendes Element
+     * @return liefert true, falls das Element gelöscht werden konnte.
+     */
+    boolean delete (T element);
     
     void preOrder(Method visit);
 
