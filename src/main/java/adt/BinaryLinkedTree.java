@@ -1,5 +1,7 @@
 package adt;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Method;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
@@ -119,7 +121,13 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
      * @return liefert den Wert true, wenn das Element eingefüght werden konnte.
      */
     @SuppressWarnings("unchecked")
-    public boolean insert(T element) {
+    public boolean insert(@NotNull T element) {
+
+
+        if (isEmpty()) {
+            makeTree(element, null, null);
+            return true;
+        }
 
         BinaryTreeNode parent, child = root;
 
@@ -134,6 +142,7 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
 
         } while (child != null);
 
+
         BinaryTreeNode node = new BinaryTreeNode<>(element, null, null);
 
         if (parent.getPayload().compareTo(element) > 0)
@@ -141,7 +150,9 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
         else
             parent.setRightChild(node);
 
+
         return true;
+
     }
 
     /**
@@ -154,8 +165,18 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
      */
     public boolean delete(T element) {
         // Suchen des Knotens
-        BinaryTreeNode node = null; // = search(element);
-        BinaryTreeNode child, temp;
+
+        BinaryTreeNode parent = root, node = root, child , temp;
+        // zu löschenden Knoten suchen
+        while (node != null) {
+            int cmp = node.compareTo(element);
+            if (cmp == 0)
+                break;
+            else {
+                parent = node;
+                node = (cmp > 0 ? node.getLeftChild() : node.getRightChild());
+            }
+        }
 
         //noinspection ConstantConditions
         if (node == null) return false;
@@ -184,7 +205,14 @@ public class BinaryLinkedTree<T extends Comparable<T>> implements BinaryTree<T> 
 
         // TODO Not yet finished
 
-        return false;
+        if (node == null)
+        // Kein Knoten gefunden
+            return false;
+        if (parent.getLeftChild() == node)
+            parent.setLeftChild(child);
+        else
+            parent.setRightChild(child);
+        return true;
     }
 
     /**

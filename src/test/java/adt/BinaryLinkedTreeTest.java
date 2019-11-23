@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BinaryLinkedTreeTest {
 
@@ -89,6 +88,43 @@ class BinaryLinkedTreeTest {
     }
 
     @Test
+    void insertNull(){
+        assertThrows(IllegalArgumentException.class, () -> tree.insert(null));
+    }
+
+    @Test
+    void insertIntoEmptyTree(){
+        tree = new BinaryLinkedTree<>();
+        assertTrue(tree.insert(7));
+        tree.levelOrder(BinaryLinkedTree.outputMethod);
+        assertEquals("7 ", outContent.toString());
+    }
+
+    @Test
+    void deleteElement3(){
+
+        assertTrue(tree.delete(3));
+        tree.inOrder(BinaryLinkedTree.outputMethod);
+        assertEquals("1 5 6 7 9 10 ", outContent.toString());
+    }
+
+    @Test
+    void deleteElement10(){
+
+        assertTrue(tree.delete(10));
+        tree.inOrder(BinaryLinkedTree.outputMethod);
+        assertEquals("1 3 5 6 7 9 ", outContent.toString());
+    }
+
+    @Test
+    void deleteNotExist(){
+
+        assertTrue(tree.delete(11));
+        tree.inOrder(BinaryLinkedTree.outputMethod);
+        assertEquals("1 3 5 6 7 9 10 11 ", outContent.toString());
+    }
+
+    @Test
     void size() {
         assertEquals(7, tree.size());
     }
@@ -97,5 +133,6 @@ class BinaryLinkedTreeTest {
     void height() {
         assertEquals(3, tree.height());
     }
+
 
 }
